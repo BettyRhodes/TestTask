@@ -33,7 +33,8 @@ class NewsFragment : BaseFragment(R.layout.fragment_news), NewsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initFeed()
-        presenter.refreshNews()
+        feedAdapter.addOnClickRepeat { presenter.refreshNews()}
+        presenter.loadNews()
         refreshLayout.setOnRefreshListener(presenter::refreshNews)
     }
 
@@ -53,7 +54,7 @@ class NewsFragment : BaseFragment(R.layout.fragment_news), NewsView {
         refreshLayout.isRefreshing = false
     }
 
-    override fun showButton() {
-
+    override fun showRepeatButton() {
+        feedAdapter.showRepeatButton()
     }
 }

@@ -13,5 +13,5 @@ interface NewsView: MvpView {
 
     fun hideProgress()
 
-    fun showButton()
+    fun showRepeatButton()
 }

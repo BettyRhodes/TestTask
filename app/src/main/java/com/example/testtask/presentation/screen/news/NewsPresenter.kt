@@ -17,7 +17,12 @@ class NewsPresenter @Inject constructor(
     private val databaseConverter: PresentationDatabaseConverter
 ) : BasePresenter<NewsView>() {
 
+    // да, это смешно
+    private val lastPage = 6
+    private var page = 0
+
     private val paginator = Paginator({
+        page = it
         newsRepository.getNews(it)
             .observeOn(AndroidSchedulers.mainThread())
             .doFinally { viewState.hideProgress() }
@@ -29,6 +34,11 @@ class NewsPresenter @Inject constructor(
 
             override fun showEmptyError(show: Boolean, error: Throwable?) {
                 viewState.showNetworkError()
+
+                newsRepository.selectNews()
+                    .doOnSuccess { viewState.showFeed(databaseConverter.convertTo(it)) }
+                    .subscribe()
+                    .untilDestroy()
             }
 
             override fun showEmptyView(show: Boolean) {
@@ -45,7 +55,8 @@ class NewsPresenter @Inject constructor(
             }
 
             override fun showErrorMessage(error: Throwable) {
-
+                if(page != lastPage)
+                    viewState.showRepeatButton()
             }
 
             override fun showRefreshProgress(show: Boolean) {
@@ -60,10 +71,6 @@ class NewsPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        newsRepository.selectNews()
-            .doOnSuccess { viewState.showFeed(databaseConverter.convertTo(it)) }
-            .subscribe()
-            .untilDestroy()
         paginator.refresh()
     }
 

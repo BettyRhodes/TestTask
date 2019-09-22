@@ -1,7 +1,9 @@
 package com.example.testtask.presentation.common
 
 import android.graphics.Color
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -26,3 +28,7 @@ fun View.showSnackbar(
     tv.setTextColor(colorId)
     snack.show()
 }
+
+fun ViewGroup.inflate(layoutId: Int, attachToRoot: Boolean = false): View =
+    LayoutInflater.from(context)
+        .inflate(layoutId, this, attachToRoot)
